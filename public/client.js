@@ -110,9 +110,16 @@ class NetworkManager {
     }
 
     startOnlineGame(data) {
+        console.log('게임 시작 데이터:', data);
+        
         // 온라인 게임 시작
         this.onlineGameData.players = data.players;
-        this.playerId = data.players.find(p => p.id)?.id;
+        
+        // 내 플레이어 ID 찾기 (소켓 ID로는 찾을 수 없으므로 첫 번째 플레이어를 나로 가정)
+        this.playerId = data.players[0]?.id || 1;
+        
+        console.log('내 플레이어 ID:', this.playerId);
+        console.log('플레이어들:', data.players);
         
         // UI 전환
         document.getElementById('waitingScreen').style.display = 'none';
@@ -125,6 +132,7 @@ class NetworkManager {
         }, 16);
         
         addLog('온라인 게임이 시작되었습니다!');
+        addLog(`플레이어들: ${data.players.map(p => p.name).join(' vs ')}`);
     }
 
     updateGameState(data) {
