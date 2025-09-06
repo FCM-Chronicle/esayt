@@ -117,13 +117,13 @@ function updateConnectionStatus(connected) {
 document.addEventListener('keydown', (e) => {
     // ESC로 화면 전환
     if (e.code === 'Escape') {
-        if (networkManager && networkManager.gameState === 'waiting') {
+        if (window.networkManager && window.networkManager.gameState === 'waiting') {
             document.getElementById('cancelMatchBtn').click();
         }
     }
     
     // 캐릭터 선택 단축키 (1-4)
-    if (networkManager && networkManager.gameState === 'menu') {
+    if (window.networkManager && window.networkManager.gameState === 'menu') {
         const charMap = {
             'Digit1': 'tanjiro',
             'Digit2': 'zenitsu', 
