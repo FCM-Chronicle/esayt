@@ -175,35 +175,52 @@ class GameRoom {
   }
 
   handlePlayerMove(player, moveData) {
-    // 이동 처리 (느린 방향 전환)
+    // 이동 처리 (부드러운 방향 전환)
     if (moveData.targetAngle !== undefined) {
       player.targetAngle = moveData.targetAngle;
     }
 
-    // 각도 보간
+    // 각도 보간 (부드러운 방향 전환)
     let angleDiff = player.targetAngle - player.angle;
     if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
     if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
     
-    player.angle += angleDiff * 0.1;
+    player.angle += angleDiff * 0.08; // 조금 더 빠른 방향 전환
 
-    // 이동
-    if (moveData.moving) {
+    // 이동 상태 업데이트
+    player.moving = moveData.moving || false;
+
+    // 부드러운 이동 처리
+    if (player.moving) {
       let speed = player.speed;
       if (player.statusEffects.slow) {
         speed *= 0.5;
       }
 
-      const moveX = Math.cos(player.angle) * speed;
-      const moveY = Math.sin(player.angle) * speed;
+      // 목표 속도
+      const targetVx = Math.cos(player.angle) * speed;
+      const targetVy = Math.sin(player.angle) * speed;
 
-      // 경계 체크
-      const newX = player.x + moveX;
-      const newY = player.y + moveY;
-
-      if (newX > 20 && newX < 980) player.x = newX;
-      if (newY > 20 && newY < 580) player.y = newY;
+      // 부드러운 가속/감속
+      player.vx += (targetVx - player.vx) * 0.3;
+      player.vy += (targetVy - player.vy) * 0.3;
+    } else {
+      // 멈출 때 부드러운 감속
+      player.vx *= 0.8;
+      player.vy *= 0.8;
+      
+      // 속도가 매우 작으면 0으로 설정
+      if (Math.abs(player.vx) < 0.01) player.vx = 0;
+      if (Math.abs(player.vy) < 0.01) player.vy = 0;
     }
+
+    // 실제 위치 업데이트
+    const newX = player.x + player.vx;
+    const newY = player.y + player.vy;
+
+    // 경계 체크 (넓어진 맵에 맞게)
+    if (newX > 30 && newX < 1370) player.x = newX;
+    if (newY > 30 && newY < 770) player.y = newY;
   }
 
   handlePlayerSkill(player, skillData) {
