@@ -129,11 +129,16 @@ class GameRoom {
     // 충돌 검사
     this.checkCollisions();
 
-    // 게임 종료 조건 체크
-    this.checkGameEnd();
+    // 게임 종료 조건 체크 (매 1초마다만 체크)
+    if (now % 1000 < 16) { // 약 1초마다
+      this.checkGameEnd();
+    }
 
-    // 클라이언트에 게임 상태 전송
-    this.broadcastGameState();
+    // 클라이언트에 게임 상태 전송 (매 3프레임마다만)
+    if (this.updateCounter % 3 === 0) {
+      this.broadcastGameState();
+    }
+    this.updateCounter = (this.updateCounter || 0) + 1;
   }
 
   updatePlayer(player, deltaTime) {
