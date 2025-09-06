@@ -390,8 +390,11 @@ class GameRoom {
         angle: p.angle,
         hp: p.hp,
         maxHp: p.maxHp,
+        name: p.name,
+        charType: p.charType,
         cooldowns: p.cooldowns,
-        statusEffects: Object.keys(p.statusEffects)
+        statusEffects: Object.keys(p.statusEffects).filter(key => p.statusEffects[key] > 0), // 배열로 변환
+        moving: p.moving || false
       })),
       projectiles: this.gameData.projectiles
     };
