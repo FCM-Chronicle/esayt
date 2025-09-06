@@ -95,14 +95,25 @@ function setupButtons() {
 }
 
 function showScreen(screenId) {
+    console.log('화면 전환:', screenId);
+    
     // 모든 화면 숨기기
     document.querySelectorAll('.screen').forEach(screen => {
         screen.style.display = 'none';
     });
     
     // 선택된 화면 표시
-    document.getElementById(screenId).style.display = 'block';
+    const targetScreen = document.getElementById(screenId);
+    if (targetScreen) {
+        targetScreen.style.display = 'block';
+        console.log('화면 전환 완료:', screenId);
+    } else {
+        console.error('화면을 찾을 수 없습니다:', screenId);
+    }
 }
+
+// 전역으로 내보내기
+window.showScreen = showScreen;
 
 // 연결 상태 업데이트
 function updateConnectionStatus(connected) {
